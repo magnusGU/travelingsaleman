@@ -128,7 +128,7 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
             for i in range(len(pop[0])):
                 plt.plot([pop[0][i].x,pop[0][(i+1) % len(pop[0])].x], [pop[0][i].y,pop[0][(i+1) % len(pop[0])].y],'ro-')
             plt.xlabel(f'Distance: {round(progress[-1])}, Iteration: {k}')
-            plt.pause(0.05)
+            plt.pause(0.10)
             plt.clf()
     for i in range(len(pop[0])):
         plt.plot([pop[0][i ].x,pop[0][(i+1) % len(pop[0])].x], [pop[0][i].y,pop[0][(i+1) % len(pop[0])].y],'ro-')
@@ -146,8 +146,9 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
 
 def main():
     cityList = []
-    random.seed(123)
-    for i in range(0,60):
+    random.seed(143)
+    np.random.seed(1343)
+    for i in range(0,25):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
     geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.02,generations=30000000)
 
