@@ -127,6 +127,7 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     route = createNN(first,population)
     print("nn finished")
     route = swapOpt(route)
+    print("swap finished")
     pop.append(route)
     progress.append(rankRoutes(pop)[0].distance)
     
@@ -161,6 +162,26 @@ def routeDistance(route):
         s += distance(route[i],route[i+1])
     s += distance(route[-1],route[0])
     return s
+
+def swapDistance(route,j,k):
+    res = 0
+    size = len(route)
+    for i in range(0,j-1):
+        res += distance(route[i],route[i+1])
+    for i in range(j,k):
+        res += distance(route[i],route[i+1])
+
+    res+= distance(route[j-1],route[k])
+    if k < size-1:
+        res+= distance(route[j],route[k+1])
+    for i in range(k+1,size-1):
+        res += distance(route[i],route[i+1])
+
+    if k == size:
+        res += distance(route[j],route[0])
+    else:
+        res += distance(route[-1],route[0])
+    return res
     
 def swapOpt(route):
     size = len(route)
@@ -170,12 +191,12 @@ def swapOpt(route):
         gotoStart = False
         for i in range(1,size-1):
             for j in range(i+1,size):
-                newRoute = swap(route.copy(),i,j)
-                distance = routeDistance(newRoute)
+                #newRoute = swap(route.copy(),i,j)
+                distance = swapDistance(route,i,j)
         
                 if distance < oldDistance:
                     newDistance = distance
-                    route = newRoute
+                    route = swap(route,i,j)
                     gotoStart = True
                 if gotoStart:
                     break
@@ -229,7 +250,7 @@ def main():
     #random.seed(123)
     x = []
     y = []
-    for i in range(0,200):
+    for i in range(0,50):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
         x.append(cityList[i].x)
         y.append(cityList[i].y)
