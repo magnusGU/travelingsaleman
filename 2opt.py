@@ -83,7 +83,7 @@ def main():
     x = []
     y = []
     random.seed(123)
-    for i in range(0,50):
+    for i in range(0,100):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
         x.append(cityList[i].x)
         y.append(cityList[i].y)
@@ -106,7 +106,7 @@ def main():
     plt.xlabel(f'Distance: {routeDistance(route)}, Iteration: {i}')
     plt.pause(0.1)
     plt.clf()
-    k = 0
+
     while True:
         gotoStart = False
         for i in range(1,size-1):
@@ -126,16 +126,12 @@ def main():
         if newDistance == oldDistance:
             break
         oldDistance = newDistance
-        #k += 1
-        print("here")
         for i in range(len(route)):
             plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
         plt.xlabel(f'Distance: {routeDistance(route)}, Iteration: {i}')
         plt.pause(0.1)
         plt.clf()
     print("Finished!")
-    print(route[0])
-    print(route[-1])
     for i in range(len(route)):
         plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
     plt.xlabel(f'Distance: {routeDistance(route)}, Iteration: {i}')
