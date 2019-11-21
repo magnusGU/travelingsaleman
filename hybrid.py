@@ -62,7 +62,8 @@ def selection(populationRanked, eliteSize):
         sum_routes += elem.distance
     for i in range(len(populationRanked)):
         p.append(populationRanked[i].distance / sum_routes)
-    fitResults = np.random.choice(populationRanked,size=eliteSize,replace=False,p=p.reverse())
+
+    fitResults = np.random.choice(populationRanked,size=(len(populationRanked)-eliteSize-1),replace=False,p=p.reverse())
     for elem in fitResults:
         selectionResults.append(elem.route)
     return selectionResults
@@ -85,10 +86,12 @@ def breed(parent1,parent2):
     return child2[0:start] + child1 + child2[start:]
     #return child1 + child2
 
-def breedPopulation(selectionResults):
-    children = selectionResults
-
-    for i in range(len(selectionResults)//2):
+def breedPopulation(selectionResults, eliteSize):
+    children = []
+    for i in range(eliteSize):
+        children.append(selectionResults[i])
+    
+    for i in range(len(selectionResults)-eliteSize):
         child = breed(selectionResults[i],selectionResults[len(selectionResults)-i-1])
         children.append(child)
 
@@ -114,7 +117,7 @@ def mutatePopulation(population, mutationRate):
 def nextGeneration(currentGen,eliteSize,mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionRes = selection(popRanked,eliteSize)
-    children = breedPopulation(selectionRes)
+    children = breedPopulation(selectionRes,eliteSize)
     nextGeneration = mutatePopulation(children,mutationRate)
     return nextGeneration
 
@@ -122,7 +125,7 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     pop = createInitialPopulation(popSize, population)
     progress = []
     first = population[0]
-    population.remove(first)
+    population.remove(first)    
     route = createNN(first,population)
     pop.append(route)
     progress.append(rankRoutes(pop)[0].distance)
@@ -133,8 +136,8 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         if(k % 100) == 0:
             for i in range(len(pop[0])):
                 plt.plot([pop[0][i].x,pop[0][(i+1) % len(pop[0])].x], [pop[0][i].y,pop[0][(i+1) % len(pop[0])].y],'ro-')
-            for i in range(len(pop[10])):
-                plt.plot([pop[10][i].x,pop[10][(i+1) % len(pop[10])].x], [pop[10][i].y,pop[10][(i+1) % len(pop[10])].y],'ko-',alpha=0.2)
+            #for i in range(len(pop[10])):
+            #    plt.plot([pop[1][i].x,pop[1][(i+1) % len(pop[1])].x], [pop[1][i].y,pop[1][(i+1) % len(pop[1])].y],'ko-',alpha=0.2)
             plt.xlabel(f'Distance: {round(progress[-1])}, Iteration: {k}')
             plt.pause(0.05)
             plt.clf()
@@ -143,14 +146,6 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         plt.xlabel(f'Distance: {round(progress[-1])}, Iteration: {i}')
     plt.show()
             
-    
-
-    
-    #plt.plot(progress)
-    #plt.ylabel('Distance')
-    #plt.xlabel('Generation')
-    plt.show()
-
 
 def distance(origin,destination):
         a = abs(origin.x - destination.x)**2
@@ -174,24 +169,35 @@ def createNN(first,cityList):
     k = 1
     while(cityList != []):
         route.append(findNearest(route[k], cityList))
-        for i in range(len(route)-1):
-            plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
-        plt.xlabel(f'Distance: {0}, Iteration: {i}')
+        #for i in range(len(route)-1):
+        #    plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
+        #plt.xlabel(f'Distance: {0}, Iteration: {i}')
         
-        plt.pause(0.15)
+        #plt.pause(0.15)
         
         cityList.remove(route[k+1])
         k += 1
+    for i in range(len(route)):
+        plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
+    plt.xlabel(f'Distance: {0}, Iteration: {i}')
+        
+    plt.pause(0.05)
+    plt.clf()
     return route
 
 
 def main():
-    
     cityList = []
     #random.seed(123)
-    for i in range(0,25):
+    x = []
+    y = []
+    for i in range(0,50):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
-    geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.02,generations=30000000)
+        x.append(cityList[i].x)
+        y.append(cityList[i].y)
+    plt.scatter(x,y)
+    plt.pause(0.05)
+    geneticAlgorithmPlot(population=cityList,popSize=1000,eliteSize=20,mutationRate=0.02,generations=30000000)
 
 if __name__ == "__main__":
     main()
