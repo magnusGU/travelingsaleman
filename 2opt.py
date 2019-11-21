@@ -78,6 +78,21 @@ def swapDistance(route,j,k):
         res += distance(route[-1],route[0])
     return res
 
+def swapDistance2(route,j,k):
+    size = len(route)-1
+    previous = distance(route[j-1],route[j])
+    if k < size:
+        previous += distance(route[k],route[k+1])
+    else:
+        previous += distance(route[k],route[0])
+    res = distance(route[j-1],route[k])
+    if k < size:
+        res += distance(route[j],route[k+1])
+    else:
+        res += distance(route[j],route[0])
+    return res < previous
+    
+
 def main():
     cityList = []
     x = []
@@ -111,13 +126,10 @@ def main():
         gotoStart = False
         for i in range(1,size-1):
             for j in range(i+1,size):
-                #newRoute = swap(route.copy(),i,j)
-                #distance = routeDistance(newRoute)
-                distance = swapDistance(route,i,j)
-        
-                if distance < oldDistance:
-                    newDistance = distance
+                if swapDistance2(route,i,j):
+                    
                     route = swap(route,i,j)
+                    newDistance = routeDistance(route)
                     gotoStart = True
                 if gotoStart:
                     break

@@ -120,6 +120,20 @@ def nextGeneration(currentGen,eliteSize,mutationRate):
     nextGeneration = mutatePopulation(children,mutationRate)
     return nextGeneration
 
+def swapDistance2(route,j,k):
+    size = len(route)-1
+    previous = distance(route[j-1],route[j])
+    if k < size:
+        previous += distance(route[k],route[k+1])
+    else:
+        previous += distance(route[k],route[0])
+    res = distance(route[j-1],route[k])
+    if k < size:
+        res += distance(route[j],route[k+1])
+    else:
+        res += distance(route[j],route[0])
+    return res < previous
+
 
 def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
     pop = createInitialPopulation(popSize, population)
@@ -194,11 +208,11 @@ def swapOpt(route):
         for i in range(1,size-1):
             for j in range(i+1,size):
                 #newRoute = swap(route.copy(),i,j)
-                distance = swapDistance(route,i,j)
+                #distance = swapDistance(route,i,j)
         
-                if distance < oldDistance:
-                    newDistance = distance
+                if swapDistance2(route,i,j):
                     route = swap(route,i,j)
+                    newDistance = routeDistance(route)
                     gotoStart = True
                 if gotoStart:
                     break
@@ -250,16 +264,16 @@ def createNN(first,cityList):
 def main():
     
     cityList = []
-    #random.seed(123)
+    random.seed(123)
     x = []
     y = []
-    for i in range(0,50):
+    for i in range(0,200):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
         x.append(cityList[i].x)
         y.append(cityList[i].y)
     plt.scatter(x,y)
     plt.pause(1)
-    geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.02,generations=30000000)
+    geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.01,generations=30000000)
 
 if __name__ == "__main__":
     main()
