@@ -61,7 +61,7 @@ def selection(populationRanked, eliteSize):
         sum_routes += elem.distance
     for i in range(len(populationRanked)):
         p.append(populationRanked[i].distance / sum_routes)
-    fitResults = np.random.choice(populationRanked,size=eliteSize,replace=False,p=p.reverse())
+    fitResults = np.random.choice(populationRanked,size=(len(populationRanked)-eliteSize-1),replace=False,p=p.reverse())
     for elem in fitResults:
         selectionResults.append(elem.route)
     return selectionResults
@@ -82,13 +82,15 @@ def breed(parent1,parent2):
    
     return child2[0:start] + child1 + child2[start:]
 
-
-def breedPopulation(selectionResults):
-    children = selectionResults
-
-    for i in range(len(selectionResults)//2):
+def breedPopulation(selectionResults, eliteSize):
+    children = []
+    for i in range(eliteSize):
+        children.append(selectionResults[i])
+    
+    for i in range(len(selectionResults)-eliteSize):
         child = breed(selectionResults[i],selectionResults[len(selectionResults)-i-1])
         children.append(child)
+
     return children
 
 def mutate(route, mutationRate):
@@ -111,8 +113,8 @@ def mutatePopulation(population, mutationRate):
 def nextGeneration(currentGen,eliteSize,mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionRes = selection(popRanked,eliteSize)
-    
-    children = breedPopulation(selectionRes)
+    children = breedPopulation(selectionRes, eliteSize)
+    print(len(children))
     nextGeneration = mutatePopulation(children,mutationRate)
     return nextGeneration
 
@@ -134,20 +136,12 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         plt.plot([pop[0][i ].x,pop[0][(i+1) % len(pop[0])].x], [pop[0][i].y,pop[0][(i+1) % len(pop[0])].y],'ro-')
         plt.xlabel(f'Distance: {round(progress[-1])}, Iteration: {i}')
     plt.show()
-            
-    
-
-    
-    #plt.plot(progress)
-    #plt.ylabel('Distance')
-    #plt.xlabel('Generation')
-    plt.show()
 
 
 def main():
     cityList = []
-    random.seed(143)
-    np.random.seed(1343)
+    random.seed()
+    np.random.seed()
     for i in range(0,25):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
     geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.02,generations=30000000)

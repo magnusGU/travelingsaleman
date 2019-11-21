@@ -62,7 +62,7 @@ def selection(populationRanked, eliteSize):
         sum_routes += elem.distance
     for i in range(len(populationRanked)):
         p.append(populationRanked[i].distance / sum_routes)
-    fitResults = np.random.choice(populationRanked,size=eliteSize,replace=False,p=p.reverse())
+    fitResults = np.random.choice(populationRanked,size=(len(populationRanked)-eliteSize-1),replace=False,p=p.reverse())
     for elem in fitResults:
         selectionResults.append(elem.route)
     return selectionResults
@@ -85,10 +85,12 @@ def breed(parent1,parent2):
     return child2[0:start] + child1 + child2[start:]
     #return child1 + child2
 
-def breedPopulation(selectionResults):
-    children = selectionResults
-
-    for i in range(len(selectionResults)//2):
+def breedPopulation(selectionResults, eliteSize):
+    children = []
+    for i in range(eliteSize):
+        children.append(selectionResults[i])
+    
+    for i in range(len(selectionResults)-eliteSize):
         child = breed(selectionResults[i],selectionResults[len(selectionResults)-i-1])
         children.append(child)
 
@@ -114,7 +116,7 @@ def mutatePopulation(population, mutationRate):
 def nextGeneration(currentGen,eliteSize,mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionRes = selection(popRanked,eliteSize)
-    children = breedPopulation(selectionRes)
+    children = breedPopulation(selectionRes, eliteSize)
     nextGeneration = mutatePopulation(children,mutationRate)
     return nextGeneration
 
@@ -236,11 +238,12 @@ def createNN(first,cityList):
         
         cityList.remove(route[k+1])
         k += 1
-    for i in range(len(route)-1):
+    for i in range(len(route)):
       plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
     plt.xlabel(f'Distance: {0}, Iteration: {i}')
         
     plt.pause(0.05)
+    plt.clf()
     return route
 
 
