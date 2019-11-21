@@ -83,17 +83,17 @@ def main():
     x = []
     y = []
     random.seed(123)
-    for i in range(0,100):
+    for i in range(0,50):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
         x.append(cityList[i].x)
         y.append(cityList[i].y)
-    
     first = cityList[0]
     print(swap([1,2,3,4],1,2))
     plt.scatter(x,y)
     plt.pause(1)
     cityList.remove(first)
     route = createRoute(first,cityList)
+    route.append(City(x=route[0].x,y=route[0].y))
     print("Start swapping \n")
    # route = [City(x=100,y=0),City(x=100,y=100),City(x=0,y=0),City(x=50,y=100),City(x=0,y=100)]
     oldDistance = routeDistance(route)
