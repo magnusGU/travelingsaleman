@@ -54,6 +54,10 @@ def selection(populationRanked, eliteSize):
     selectionResults = []
     for i in range(eliteSize):
         selectionResults.append(populationRanked[i].route)
+    #limit = len(populationRanked)-eliteSize
+    #r = random.randrange(limit)
+    #for i in range(r):
+    #    selectionResults.append(populationRanked[eliteSize+random.randrange(limit-1)].route)
     return selectionResults
 
 def breed(parent1,parent2):
@@ -70,16 +74,21 @@ def breed(parent1,parent2):
         
     child2 = [item for item in parent2 if item not in child1]
    
-    return child2[0:start] + child1 + child2[start:]
+    #return child2[0:start] + child1 + child2[start:]
+    return child1 + child2
 
-def breedPopulation(selectionResults):
-    children = selectionResults
 
-    for i in range(len(selectionResults)//2):
+def breedPopulation(selectionResults, eliteSize):
+    children = []
+    for i in range(eliteSize):
+        children.append(selectionResults[i])
+    
+    for i in range(len(selectionResults)-eliteSize):
         child = breed(selectionResults[i],selectionResults[len(selectionResults)-i-1])
         children.append(child)
-    return children
 
+    return children
+    
 def mutate(route, mutationRate):
     for swapped in range(len(route)):
         if random.random() < mutationRate:
@@ -91,8 +100,8 @@ def mutate(route, mutationRate):
 
 def mutatePopulation(population, mutationRate):
     mutatedPop = []
-    mutatedPop.append(population[0])
-    for ind in range(1, len(population)):
+    mutatedPop.append(population[0].copy())
+    for ind in range(0, len(population)):
         mutatedInd = mutate(population[ind], mutationRate)
         mutatedPop.append(mutatedInd)
     return mutatedPop
@@ -112,9 +121,11 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     for k in range(0, generations):
         pop = nextGeneration(pop, eliteSize, mutationRate)
         progress.append(rankRoutes(pop)[0].distance)
-        if(k % 500) == 0:
+        if(k % 100) == 0:
             for i in range(len(pop[0])):
                 plt.plot([pop[0][i].x,pop[0][(i+1) % len(pop[0])].x], [pop[0][i].y,pop[0][(i+1) % len(pop[0])].y],'ro-')
+            for i in range(len(pop[10])):
+                plt.plot([pop[10][i].x,pop[10][(i+1) % len(pop[10])].x], [pop[10][i].y,pop[10][(i+1) % len(pop[10])].y],'ko-',alpha=0.2)
             plt.xlabel(f'Distance: {round(progress[-1])}, Iteration: {k}')
             plt.pause(0.05)
             plt.clf()
