@@ -114,7 +114,6 @@ def nextGeneration(currentGen,eliteSize,mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionRes = selection(popRanked,eliteSize)
     children = breedPopulation(selectionRes, eliteSize)
-    print(len(children))
     nextGeneration = mutatePopulation(children,mutationRate)
     return nextGeneration
 
@@ -140,8 +139,8 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
 
 def main():
     cityList = []
-    random.seed()
-    np.random.seed()
+    random.seed(123)
+    np.random.seed(1243)
     for i in range(0,25):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
     geneticAlgorithmPlot(population=cityList,popSize=100,eliteSize=20,mutationRate=0.02,generations=30000000)

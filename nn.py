@@ -34,12 +34,12 @@ def createRoute(first,cityList):
     k = 1
     while(cityList != []):
         route.append(findNearest(route[k], cityList))
-        #for i in range(len(route)-1):
-        #    plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
-        #plt.xlabel(f'Distance: {0}, Iteration: {i}')
+        for i in range(len(route)-1):
+            plt.plot([route[i ].x,route[(i+1) % len(route)].x], [route[i].y,route[(i+1) % len(route)].y],'ro-')
+        plt.xlabel(f'Distance: {0}, Iteration: {i}')
         
-        #plt.pause(0.15)
-        #plt.clf()
+        plt.pause(0.05)
+        
         cityList.remove(route[k+1])
         k += 1
     return route
@@ -49,8 +49,8 @@ def main():
     cityList = []
     x = []
     y = []
-    random.seed(123)
-    for i in range(0,60):
+    random.seed(3)
+    for i in range(0,50):
         cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
         x.append(cityList[i].x)
         y.append(cityList[i].y)
